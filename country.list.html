@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Country List</title>
+	<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="style.css">
+<script src="main.js"></script>
+ 
+ <style>
+  	.container-fluid{
+  		margin:0;
+  		padding: 0;
+  	}
+   .logoutrow{
+   	 max-width: 90%;
+   }
+   a{
+   	font-size: 22px;
+   	font-weight: 600;
+   }
+  table{
+    max-width: 80%;
+    margin-left: 130px !important;
+  }
+    ul li{
+       list-style-type: none;
+        display: inline-block;
+        font-size: 20px;
+   }
+  </style>
+
+</head>
+<body>
+
+<div class="container-fluid">
+  <nav class="navbar navbar-expand-md bg-dark">
+   <a href="index.html" class="home font-weight-bolder text-white ml-5">Home</a>
+   <a href="index.html" class="home font-weight-bolder text-white ml-auto mr-5">Logout</a>
+</nav>
+
+<div class="container">
+  <div class="row">
+      <div class="col-lg-6 col-md-6 col-sm-12 ml-5 mt-5">
+       <h3 class="ml-5"><u>Country List</u></h3>
+    </div>
+     <div class="col-lg-6 col-md-6 col-sm-12 text-right ml-auto mr-5 mt-sm-5">
+           <a href="country.create.html"><button type="button" class="btn btn-primary mr-5 font-weight-bold">Create Country</button></a>
+      </div>
+  <div class="col-lg-12 col-md-12 col-sm-12">
+   <table class="table table-bordered text-dark text-center mt-3">
+      <thead>
+        <tr id="trId_head">
+          <th>S.No</th>
+          <th>Name</th>
+          <th>Short Name</th>
+          <th>Update/Delete</th>
+        </tr>
+      </thead>
+       <tbody id="displayArea">
+       </tbody>
+    </table>
+    </div>
+ </div>
+
+
+</div>
+</div>
+
+<script>
+ 
+	var countryArray = [];
+$( document ).ready(function() {
+    var obj = JSON.parse(localStorage.getItem("testKey"));
+    var token = obj.token;
+    var agentId = obj.agentId; 
+
+    console.log("token: "+token+", agentId: "+agentId);
+    $.ajax({
+       url: 'http://101.53.155.156/api/country/get',
+       type: 'GET',
+       async: false,
+       dataType: "json",
+       headers: {
+          "aId": "agentId", 
+          "Authorization": "BslogiKey "+token, 
+          "Content-Type": "application/json"
+        },
+       success: function (response) {
+        $.each(response.data, function(i, object){
+          console.log(object);
+            countryArray.push(object);
+        });
+        
+       }
+    
+    });      
+   
+   addTable();
+});
+
+var sNo = 1;
+function addTable(){
+  $('#displayArea').empty();
+    for(i = 0; i < countryArray.length; i++){
+      var countryObj = countryArray[i];
+       $('#displayArea').append("<tr id='trId_"+sNo+"'><td>" + sNo + "</td><td>" + countryObj.name + "</td><td>" + countryObj.shortName + "</td><td><span class='editrow' style='cursor:pointer;'><a style='cursor:pointer;color:black' class='fa fa-edit' href='javascript:void(0);'     onclick ='editTeacher(\""+countryObj.id+"\");' >Edit</a></span><span><a onclick='deleteTeacher(\""+countryObj.id+"\");' class='material-icons'style='font-size:30px;color:red;margin-left:30px;cursor:pointer;'>delete</a></span></td></tr>");
+         sNo++;
+    }  
+}  
+
+function editTeacher(id){
+    window.location.href = "country.create.html?id="+id;
+}
+</script>
+
+</body>
+</html>

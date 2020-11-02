@@ -1,0 +1,40 @@
+*{
+	margin:0;
+	padding: 0;
+}
+.container-fluid{
+  margin:0;
+  padding: 0;
+}
+.home{
+	font-size: 28px;
+}
+.box{
+	border: 1px solid black;
+	border-radius: 20px;
+}
+label{
+  font-size:16px;
+  font-weight: 500;
+}
+.btn-lg{
+  font-weight: 500;
+}
+ul li{
+   list-style-type: none;
+    display: inline-block;
+    font-size: 20px;
+}
+.card{
+	width: 50%;
+}
+
+@media(max-width: 425px){
+	input{
+		height: 40px !important;
+		width: 50%;
+	}
+	.home{
+	font-size: 14px;
+}
+}

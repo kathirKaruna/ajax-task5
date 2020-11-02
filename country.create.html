@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Country create</title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="style.css">
+<script src="main.js"></script>
+
+
+</head>
+<body>
+<div class="container-fluid">
+  <nav class="navbar navbar-expand-md bg-dark">
+   <a href="index.html" class="home font-weight-bolder text-white ml-5">Home</a>
+   <a href="index.html" class="home font-weight-bolder text-white ml-auto mr-5">Logout</a>
+</nav>
+
+  <div class="container">
+    <div class="col-lg-12 col-md-12 col-sm-6 mt-5 mr-lg-5 box">
+    <div class="row mt-5">
+      <h3 class=" col-12 text-center font-weight-bolder ml-auto mr-auto text-dark head"><u>Create Country</u></h3>
+      <div class="col-lg-6 col-md-6 col-sm-6 mt-4 text-center">
+        <div class="form-group">
+          <input type="text" id="name" name="name" placeholder="Name" class="form-control">
+          <span class="required" id="nameErrId"></span>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-6 text-center mt-4">
+        <div class="form-group">
+          <input type="text" id="sName" name="sName" placeholder="Short Name" class="form-control">
+          <span class="required" id="sNameErrId"></span>
+        </div>
+      </div>
+      <div class="col-12 text-center mt-3">
+        <div class="form-group">
+          <button type="button" class="btn btn-block btn-primary mb-5" onclick="createCountry()">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>  
+
+</div>
+
+
+
+
+<script>
+  var token = "";
+  var agentId = "";
+  var countryObj = {};
+function createCountry(){
+  var name = $("#name").val();
+  var shortName = $("#sName").val(); 
+  var obj = {
+      "name":name,
+      "shortName":shortName
+  };
+
+  if(countryObj.id){
+    obj.id = countryObj.id;
+    var jsonObj = JSON.stringify(obj);
+    $.ajax({
+       url: 'http://101.53.155.156/api/country/update/',
+       type: 'PUT',
+       async: false,
+       dataType: "json", 
+       data: jsonObj,
+       headers: {
+          "aId": "agentId", 
+          "Authorization": "BslogiKey "+token, 
+          "Content-Type": "application/json"
+        },
+       success: function (response) {
+        console.log(response.data);
+              alert("Country Updated Successfully");
+               $('input[type="text"]').val("");
+              window.location.replace("country.list.html");
+               
+          }
+        });  
+
+  }else{
+    var jsonObj = JSON.stringify(obj);
+    var obj = JSON.parse(localStorage.getItem("testKey"));
+     token = obj.token;
+    agentId = obj.agentId; 
+    $.ajax({
+         url: 'http://101.53.155.156/api/country/create/',
+         type: 'POST',
+         async: false,
+         dataType: "json", 
+         data: jsonObj,
+         headers: {
+            "aId": "agentId", 
+            "Authorization": "BslogiKey "+token, 
+            "Content-Type": "application/json"
+          },
+         success: function (response) {
+          console.log(response.data);
+                alert("Country Created Successfully");
+                 $('input[type="text"]').val("");
+                window.location.replace("country.list.html");
+                 
+          }
+        });  
+  }
+  
+  
+  }
+
+$(document).ready(function(){
+  var url_string = (window.location.href).toLowerCase();
+  var url = new URL(url_string);
+  var id = url.searchParams.get("id");
+  var obj = JSON.parse(localStorage.getItem("testKey"));
+     token = obj.token;
+    agentId = obj.agentId; 
+     $.ajax({
+       url: 'http://101.53.155.156/api/country/get/'+id,
+       type: 'GET',
+       async: false,
+       dataType: "json",
+       headers: {
+          "aId": "agentId", 
+          "Authorization": "BslogiKey "+token, 
+          "Content-Type": "application/json"
+        },     
+       success: function (response) {
+           countryObj = response.data;
+           console.log(countryObj);
+            $("#name").val(countryObj.name);
+            $("#sName").val(countryObj.shortName);
+       }
+    
+     });
+  
+});
+</script>
+</body>
+</html>
